@@ -717,28 +717,58 @@ const textSection = document.getElementById("container--text");
 const paragraphContainer = document.getElementById("container-paragraph");
 const copyButton = document.getElementById("text--button--copy");
 
+// Función para formatear la fecha como "17 de octubre"
+function formatearFecha(fecha) {
+  const fechaObj = new Date(fecha);
+  const opciones = { day: "numeric", month: "long" };
+  return fechaObj.toLocaleDateString("es-ES", opciones);
+}
+
+// Función para obtener el porcentaje de descuento
+function obtenerPorcentajeDescuento(inputElement) {
+  return inputElement.value ? `${inputElement.value}%` : "0%";
+}
+
+// Función para extraer el valor numérico del precio final
+function obtenerPrecioFinal(precioTexto) {
+  const regex = /S\/\s*([\d,.]+)/; // Expresión regular para capturar el monto después de "S/"
+  const match = precioTexto.match(regex);
+  return match ? `S/ ${match[1]}` : "Precio no disponible";
+}
+
+// Función para obtener el monto total de los cursos seleccionados
+function calcularMontoTotal() {
+  let total = 0;
+  cursosVisibles.forEach((numeroCurso) => {
+    const precioFinalTexto = document.getElementById(
+      `price--final-${numeroCurso}`
+    ).textContent;
+    const precioFinal = parseFloat(precioFinalTexto.replace(/[^\d.-]/g, "")); // Convertir a número
+    total += precioFinal;
+  });
+  return total.toFixed(2); // Devolver con dos decimales
+}
+
 // Listener para el botón "Generar texto"
 generateTextButton.addEventListener("click", function () {
-  let textoGenerado = "<p>Buenas tardes,</p>"; // Texto inicial común
+  let textoGenerado = "Buenas tardes, "; // Texto inicial sin salto de línea
   let esPromocion = botonSeleccionado === "promoción";
   let esPreventa = botonSeleccionado === "pre venta";
   let esNinguno = botonSeleccionado === "ninguno";
   let tieneFecha =
     selectorDate.value && !noDateButton.classList.contains("button-blue");
-  let fecha = selectorDate.value ? selectorDate.value : "";
+  let fecha = selectorDate.value ? formatearFecha(selectorDate.value) : ""; // Formatear la fecha
 
-  // Separar con un salto de línea
-  textoGenerado += "<br>";
-
+  // Cuando solo hay un curso seleccionado
   if (cursosVisibles.length === 1) {
-    // Cuando solo hay un curso seleccionado
     const numeroCurso = cursosVisibles[0];
     const cursoSelect = document.getElementById(`field--select-${numeroCurso}`);
     const cursoNombre =
       cursoSelect.options[cursoSelect.selectedIndex].text.split(" - ")[0];
-    const precioFinal = document.getElementById(
+    const precioFinalTexto = document.getElementById(
       `price--final-${numeroCurso}`
     ).textContent;
+    const precioFinal = obtenerPrecioFinal(precioFinalTexto); // Aplicar la función para obtener solo el monto
     const precioOriginal = cursoSelect.value;
 
     // Buscar el curso en el array "cursos" para obtener el link
@@ -746,30 +776,36 @@ generateTextButton.addEventListener("click", function () {
     const linkCurso = cursoObj ? cursoObj.link : "Link no disponible";
 
     if (esPromocion) {
-      textoGenerado += `<p>🎉 El precio en promoción, con el descuento aplicado, del curso <strong>${cursoNombre}</strong> es de ${precioFinal}. Su precio normal es de ${precioOriginal}.</p>`;
+      const discountInput = document.getElementById(
+        `number--discount-${numeroCurso}`
+      );
+      const porcentajeDescuento = obtenerPorcentajeDescuento(discountInput);
+      textoGenerado += `el precio en promoción, con el ${porcentajeDescuento} de descuento, del curso <strong>${cursoNombre}</strong> es de ${precioFinal} 🙌. Su precio normal es de ${precioOriginal}.`;
       if (tieneFecha) {
-        textoGenerado += `<p>La promoción es válida hasta ${fecha}.</p>`;
+        textoGenerado += ` La promoción es válida hasta el ${fecha}.`;
       }
     } else if (esPreventa) {
-      textoGenerado += `<p>🛒 El precio en pre venta del curso <strong>${cursoNombre}</strong> es de ${precioFinal}. Su precio normal es de ${precioOriginal}.</p>`;
+      textoGenerado += `el precio en pre venta del curso <strong>${cursoNombre}</strong> es de ${precioFinal} 🙌. Su precio normal es de ${precioOriginal}.`;
       if (tieneFecha) {
-        textoGenerado += `<p>La pre venta es válida hasta ${fecha}.</p>`;
+        textoGenerado += ` La pre venta es válida hasta el ${fecha}.`;
       }
     } else if (esNinguno) {
-      textoGenerado += `<p>El precio del curso <strong>${cursoNombre}</strong> es de ${precioFinal}.</p>`;
+      // Para el caso de "Ninguno"
+      textoGenerado += `el precio del curso <strong>${cursoNombre}</strong> es de ${precioFinal} 🙌.`;
     }
 
-    textoGenerado += `<p>Le adjuntamos el link para que pueda obtener mayor información: <a href="${linkCurso}">${linkCurso}</a></p>`;
+    textoGenerado += ` Le adjuntamos el link para que pueda obtener mayor información: <a href="${linkCurso}">${linkCurso}</a><br><br>`;
+
+    // Cuando hay más de un curso seleccionado
   } else if (cursosVisibles.length > 1) {
-    // Cuando hay más de un curso seleccionado, usando secuencia sin listas
     if (esPromocion) {
       textoGenerado +=
-        "<p>🎉 Los precios de los cursos en promoción son los siguientes:</p>";
+        "los precios de los cursos en promoción son los siguientes:<br><br>";
     } else if (esPreventa) {
       textoGenerado +=
-        "<p>🛒 Los precios de los cursos en pre venta son los siguientes:</p>";
+        "los precios de los cursos en pre venta son los siguientes:<br><br>";
     } else if (esNinguno) {
-      textoGenerado += "<p>Los precios de los cursos son los siguientes:</p>";
+      textoGenerado += "los precios de los cursos son los siguientes:<br><br>";
     }
 
     cursosVisibles.forEach((numeroCurso) => {
@@ -778,25 +814,40 @@ generateTextButton.addEventListener("click", function () {
       );
       const cursoNombre =
         cursoSelect.options[cursoSelect.selectedIndex].text.split(" - ")[0];
-      const precioFinal = document.getElementById(
+      const precioFinalTexto = document.getElementById(
         `price--final-${numeroCurso}`
       ).textContent;
+      const precioFinal = obtenerPrecioFinal(precioFinalTexto); // Aplicar la función para obtener solo el monto
       const precioOriginal = cursoSelect.value;
 
       // Buscar el curso en el array "cursos" para obtener el link
       const cursoObj = cursos.find((curso) => curso.nombre === cursoNombre);
       const linkCurso = cursoObj ? cursoObj.link : "Link no disponible";
 
-      // Añadimos el texto para cada curso sin listas
-      textoGenerado += `<p><strong>${cursoNombre}</strong>: Precio final ${precioFinal} (precio normal: ${precioOriginal}).</p>`;
-      if (esPromocion && tieneFecha) {
-        textoGenerado += `<p>La promoción es válida hasta ${fecha}.</p>`;
-      } else if (esPreventa && tieneFecha) {
-        textoGenerado += `<p>La pre venta es válida hasta ${fecha}.</p>`;
+      if (esPromocion) {
+        const discountInput = document.getElementById(
+          `number--discount-${numeroCurso}`
+        );
+        const porcentajeDescuento = obtenerPorcentajeDescuento(discountInput);
+        textoGenerado += `El precio en promoción, con el ${porcentajeDescuento} de descuento, del curso <strong>${cursoNombre}</strong> es de ${precioFinal} 🙌. Su precio normal es de ${precioOriginal}.`;
+        if (tieneFecha) {
+          textoGenerado += ` La promoción es válida hasta el ${fecha}.`;
+        }
+      } else if (esPreventa) {
+        textoGenerado += `El precio en pre venta del curso <strong>${cursoNombre}</strong> es de ${precioFinal} 🙌. Su precio normal es de ${precioOriginal}.`;
+        if (tieneFecha) {
+          textoGenerado += ` La pre venta es válida hasta el ${fecha}.`;
+        }
+      } else if (esNinguno) {
+        textoGenerado += `El precio del curso <strong>${cursoNombre}</strong> es de ${precioFinal} 🙌.`;
       }
 
-      textoGenerado += `<p>Le adjuntamos el link para mayor información: <a href="${linkCurso}">${linkCurso}</a></p><br>`;
+      textoGenerado += ` Le adjuntamos el link para mayor información: <a href="${linkCurso}">${linkCurso}</a><br><br>`;
     });
+
+    // Calcular el monto total y añadir el texto
+    const montoTotal = calcularMontoTotal();
+    textoGenerado += `El monto total por ${cursosVisibles.length} cursos es de S/ ${montoTotal} 🙌.<br>`;
   }
 
   // Insertar el contenido generado en formato HTML
