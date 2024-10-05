@@ -731,6 +731,10 @@ function calcularMontoTotal() {
       `price--final-${numeroCurso}`
     ).textContent;
     const precioFinal = parseFloat(precioFinalTexto.replace(/[^\d.-]/g, ""));
+
+    if (!isNaN(precioFinal)) {
+      total += precioFinal; // Aquí acumulamos el precio en la variable total
+    }
   });
   return total.toFixed(2);
 }
