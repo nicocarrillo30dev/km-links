@@ -250,3 +250,10 @@ h3 {
 .visible {
   display: flex;
 }
+
+/* Eliminar la apariencia por defecto de Safari */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
