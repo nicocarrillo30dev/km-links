@@ -89,7 +89,7 @@ h3 {
   height: 40px;
   padding: 5px 12px;
   gap: 10px;
-  color: #ae0e0e;
+  color: #000;
   background-color: #fff;
   border: 1px solid #dedede;
   cursor: pointer;
@@ -127,6 +127,7 @@ h3 {
   justify-content: center;
   align-items: center;
   gap: 10px;
+  color: #020b59;
   background-color: #fff;
   border: 1px solid #dedede;
   cursor: pointer;
