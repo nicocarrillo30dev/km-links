@@ -60,13 +60,14 @@ h3 {
 }
 .button {
   display: flex;
+  font-size: 14px;
   height: 40px;
   padding: 5px 12px;
   justify-content: center;
   align-items: center;
   gap: 10px;
   color: #020b59;
-  max-width: 100px;
+  max-width: 150px;
   background-color: #fff;
   border: 1px solid #dedede;
   cursor: pointer;
@@ -185,12 +186,14 @@ h3 {
 .add__course {
   display: flex;
   width: 100%;
+  font-size: 14px;
   padding: 12px 10px;
   justify-content: center;
   align-items: center;
   gap: 4px;
   align-self: stretch;
   background-color: #fff;
+  color: #020b59;
   max-width: 400px;
   border: 1px solid #dedede;
   cursor: pointer;
@@ -218,12 +221,13 @@ h3 {
 .button-blue {
   display: flex;
   padding: 12px 10px;
+  font-size: 14px;
   justify-content: center;
   align-items: center;
   gap: 10px;
   align-self: stretch;
   background-color: #001a5a;
-  max-width: 315px;
+  max-width: 400px;
   color: #fff;
   border: none;
   cursor: pointer;
