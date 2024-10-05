@@ -867,7 +867,7 @@ copyButton.addEventListener("click", function () {
 
   document.body.removeChild(tempTextArea);
 
-  alert("Texto copiado al portapapeles");
+  alert("¡Texto copiado exitosamente! 🎉");
 });
 
 const newTextButton = document.getElementById("new--button--text");
