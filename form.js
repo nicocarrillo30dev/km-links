@@ -538,10 +538,18 @@ const courseSection = document.getElementById("section--courses");
 const addCourseButton = document.getElementById("course--add");
 const generateText = document.getElementById("course--create");
 
+// Ordenar el array alfabéticamente por el nombre del curso
+cursos.sort(function (a, b) {
+  if (a.nombre.toLowerCase() < b.nombre.toLowerCase()) return -1;
+  if (a.nombre.toLowerCase() > b.nombre.toLowerCase()) return 1;
+  return 0;
+});
+
 let courseCount = 1;
 let cursosVisibles = [];
 let botonSeleccionado = "";
 
+// Función para crear el curso y agregar las opciones al <select>
 function crearCurso() {
   let numeroCurso = 1;
   while (cursosVisibles.includes(numeroCurso)) {
@@ -565,6 +573,7 @@ function crearCurso() {
   selectElement.classList.add("select__field");
   selectElement.id = `field--select-${numeroCurso}`;
 
+  // Recorrer los cursos ordenados y agregarlos como opciones
   cursos.forEach((curso) => {
     const option = document.createElement("option");
     option.value = curso.precio;
@@ -620,24 +629,6 @@ function crearCurso() {
   newCourseContainer.appendChild(courseTitle);
   newCourseContainer.appendChild(inputFields);
   newCourseContainer.appendChild(finalPrice);
-
-  if (numeroCurso > 1) {
-    const deleteButton = document.createElement("button");
-    deleteButton.id = `course--delete-${numeroCurso}`;
-    deleteButton.classList.add("delete__course");
-    deleteButton.textContent = "eliminar curso";
-
-    deleteButton.addEventListener("click", function () {
-      const containerToDelete = document.getElementById(
-        `course-container-${numeroCurso}`
-      );
-      containerToDelete.remove();
-
-      cursosVisibles = cursosVisibles.filter((num) => num !== numeroCurso);
-    });
-
-    newCourseContainer.appendChild(deleteButton);
-  }
 
   const courseSection = document.getElementById("section--courses");
   courseSection.appendChild(newCourseContainer);
