@@ -538,7 +538,6 @@ const courseSection = document.getElementById("section--courses");
 const addCourseButton = document.getElementById("course--add");
 const generateText = document.getElementById("course--create");
 
-// Ordenar el array alfabéticamente por el nombre del curso
 cursos.sort(function (a, b) {
   if (a.nombre.toLowerCase() < b.nombre.toLowerCase()) return -1;
   if (a.nombre.toLowerCase() > b.nombre.toLowerCase()) return 1;
@@ -549,7 +548,6 @@ let courseCount = 1;
 let cursosVisibles = [];
 let botonSeleccionado = "";
 
-// Función para crear el curso y agregar las opciones al <select>
 function crearCurso() {
   let numeroCurso = 1;
   while (cursosVisibles.includes(numeroCurso)) {
@@ -573,7 +571,6 @@ function crearCurso() {
   selectElement.classList.add("select__field");
   selectElement.id = `field--select-${numeroCurso}`;
 
-  // Recorrer los cursos ordenados y agregarlos como opciones
   cursos.forEach((curso) => {
     const option = document.createElement("option");
     option.value = curso.precio;
@@ -657,27 +654,24 @@ function resetDateButtons() {
   selectorDate.classList.remove("button-blue");
 }
 
-// Listener para el botón Promoción
 document
   .getElementById("promocion--button")
   .addEventListener("click", function () {
     resetDiscountButtons();
     document.getElementById("promocion--button").classList.add("button-blue");
     dateSection.classList.remove("hidden");
-    botonSeleccionado = "promoción"; // Almacenar que se seleccionó promoción
+    botonSeleccionado = "promoción";
   });
 
-// Listener para el botón Pre Venta
 document
   .getElementById("preventa--button")
   .addEventListener("click", function () {
     resetDiscountButtons();
     document.getElementById("preventa--button").classList.add("button-blue");
     dateSection.classList.remove("hidden");
-    botonSeleccionado = "pre venta"; // Almacenar que se seleccionó pre venta
+    botonSeleccionado = "pre venta";
   });
 
-// Listener para el botón Ninguno
 document
   .getElementById("ninguno--button")
   .addEventListener("click", function () {
@@ -688,7 +682,7 @@ document
     courseSection.classList.remove("hidden");
     addCourseButton.classList.add("visible");
     generateText.classList.add("visible");
-    botonSeleccionado = "ninguno"; // Almacenar que se seleccionó ninguno
+    botonSeleccionado = "ninguno";
   });
 
 selectorDate.addEventListener("click", function () {
@@ -709,57 +703,47 @@ noDateButton.addEventListener("click", function () {
   generateText.classList.add("visible");
 });
 
-//
-
-// 1. Obtener referencia de los botones y el contenedor donde se generará el texto
 const generateTextButton = document.getElementById("course--create");
 const textSection = document.getElementById("container--text");
 const paragraphContainer = document.getElementById("container-paragraph");
 const copyButton = document.getElementById("text--button--copy");
 
-// Función para formatear la fecha como "17 de octubre"
 function formatearFecha(fecha) {
   const fechaObj = new Date(fecha);
   const opciones = { day: "numeric", month: "long" };
   return fechaObj.toLocaleDateString("es-ES", opciones);
 }
 
-// Función para obtener el porcentaje de descuento
 function obtenerPorcentajeDescuento(inputElement) {
   return inputElement.value ? `${inputElement.value}%` : "0%";
 }
 
-// Función para extraer el valor numérico del precio final
 function obtenerPrecioFinal(precioTexto) {
   const regex = /S\/\s*([\d,.]+)/; // Expresión regular para capturar el monto después de "S/"
   const match = precioTexto.match(regex);
   return match ? `S/ ${match[1]}` : "Precio no disponible";
 }
 
-// Función para obtener el monto total de los cursos seleccionados
 function calcularMontoTotal() {
   let total = 0;
   cursosVisibles.forEach((numeroCurso) => {
     const precioFinalTexto = document.getElementById(
       `price--final-${numeroCurso}`
     ).textContent;
-    const precioFinal = parseFloat(precioFinalTexto.replace(/[^\d.-]/g, "")); // Convertir a número
-    total += precioFinal;
+    const precioFinal = parseFloat(precioFinalTexto.replace(/[^\d.-]/g, ""));
   });
-  return total.toFixed(2); // Devolver con dos decimales
+  return total.toFixed(2);
 }
 
-// Listener para el botón "Generar texto"
 generateTextButton.addEventListener("click", function () {
-  let textoGenerado = "Buenas tardes, "; // Texto inicial sin salto de línea
+  let textoGenerado = "Buenas tardes, ";
   let esPromocion = botonSeleccionado === "promoción";
   let esPreventa = botonSeleccionado === "pre venta";
   let esNinguno = botonSeleccionado === "ninguno";
   let tieneFecha =
     selectorDate.value && !noDateButton.classList.contains("button-blue");
-  let fecha = selectorDate.value ? formatearFecha(selectorDate.value) : ""; // Formatear la fecha
+  let fecha = selectorDate.value ? formatearFecha(selectorDate.value) : "";
 
-  // Cuando solo hay un curso seleccionado
   if (cursosVisibles.length === 1) {
     const numeroCurso = cursosVisibles[0];
     const cursoSelect = document.getElementById(`field--select-${numeroCurso}`);
@@ -768,10 +752,9 @@ generateTextButton.addEventListener("click", function () {
     const precioFinalTexto = document.getElementById(
       `price--final-${numeroCurso}`
     ).textContent;
-    const precioFinal = obtenerPrecioFinal(precioFinalTexto); // Aplicar la función para obtener solo el monto
+    const precioFinal = obtenerPrecioFinal(precioFinalTexto);
     const precioOriginal = cursoSelect.value;
 
-    // Buscar el curso en el array "cursos" para obtener el link
     const cursoObj = cursos.find((curso) => curso.nombre === cursoNombre);
     const linkCurso = cursoObj ? cursoObj.link : "Link no disponible";
 
@@ -790,13 +773,10 @@ generateTextButton.addEventListener("click", function () {
         textoGenerado += ` La pre venta es válida hasta el ${fecha}.`;
       }
     } else if (esNinguno) {
-      // Para el caso de "Ninguno"
       textoGenerado += `el precio del curso <strong>${cursoNombre}</strong> es de ${precioFinal} 🙌.`;
     }
 
     textoGenerado += ` Le adjuntamos el link para que pueda obtener mayor información: <a href="${linkCurso}">${linkCurso}</a><br><br>`;
-
-    // Cuando hay más de un curso seleccionado
   } else if (cursosVisibles.length > 1) {
     if (esPromocion) {
       textoGenerado +=
@@ -817,10 +797,9 @@ generateTextButton.addEventListener("click", function () {
       const precioFinalTexto = document.getElementById(
         `price--final-${numeroCurso}`
       ).textContent;
-      const precioFinal = obtenerPrecioFinal(precioFinalTexto); // Aplicar la función para obtener solo el monto
+      const precioFinal = obtenerPrecioFinal(precioFinalTexto);
       const precioOriginal = cursoSelect.value;
 
-      // Buscar el curso en el array "cursos" para obtener el link
       const cursoObj = cursos.find((curso) => curso.nombre === cursoNombre);
       const linkCurso = cursoObj ? cursoObj.link : "Link no disponible";
 
@@ -845,44 +824,34 @@ generateTextButton.addEventListener("click", function () {
       textoGenerado += ` Le adjuntamos el link para mayor información: <a href="${linkCurso}">${linkCurso}</a><br><br>`;
     });
 
-    // Calcular el monto total y añadir el texto
     const montoTotal = calcularMontoTotal();
     textoGenerado += `El monto total por ${cursosVisibles.length} cursos es de S/ ${montoTotal} 🙌.<br>`;
   }
 
-  // Insertar el contenido generado en formato HTML
   paragraphContainer.innerHTML = textoGenerado;
 
-  // Mostrar la sección de texto generado
   textSection.classList.remove("hidden");
 });
 
 copyButton.addEventListener("click", function () {
-  // Crear una copia del contenido actual del contenedor de párrafo
   let textToCopy = paragraphContainer.innerHTML;
 
-  // Reemplazar los <br> por saltos de línea
   textToCopy = textToCopy.replace(/<br\s*\/?>/gi, "\n");
 
-  // Reemplazar los <strong> (negrita) por texto plano
   textToCopy = textToCopy.replace(/<\/?strong>/gi, "");
 
-  // Reemplazar los enlaces <a href="..."> por la URL sin duplicar
   textToCopy = textToCopy.replace(
     /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1>.*?<\/a>/gi,
     "$2"
   );
 
-  // Crear un área de texto temporal para copiar el contenido sin HTML
   const tempTextArea = document.createElement("textarea");
   tempTextArea.value = textToCopy;
   document.body.appendChild(tempTextArea);
 
-  // Seleccionar y copiar el contenido
   tempTextArea.select();
   document.execCommand("copy");
 
-  // Eliminar el área de texto temporal
   document.body.removeChild(tempTextArea);
 
   alert("¡Texto copiado exitosamente! 🎉");
