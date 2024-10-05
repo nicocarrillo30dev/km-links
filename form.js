@@ -858,18 +858,35 @@ generateTextButton.addEventListener("click", function () {
 });
 
 copyButton.addEventListener("click", function () {
+  // Crear una copia del contenido actual del contenedor de párrafo
+  let textToCopy = paragraphContainer.innerHTML;
+
+  // Reemplazar los <br> por saltos de línea
+  textToCopy = textToCopy.replace(/<br\s*\/?>/gi, "\n");
+
+  // Reemplazar los <strong> (negrita) por texto plano
+  textToCopy = textToCopy.replace(/<\/?strong>/gi, "");
+
+  // Reemplazar los enlaces <a href="..."> por la URL sin duplicar
+  textToCopy = textToCopy.replace(
+    /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1>.*?<\/a>/gi,
+    "$2"
+  );
+
+  // Crear un área de texto temporal para copiar el contenido sin HTML
   const tempTextArea = document.createElement("textarea");
-  tempTextArea.value = paragraphContainer.textContent;
+  tempTextArea.value = textToCopy;
   document.body.appendChild(tempTextArea);
 
+  // Seleccionar y copiar el contenido
   tempTextArea.select();
   document.execCommand("copy");
 
+  // Eliminar el área de texto temporal
   document.body.removeChild(tempTextArea);
 
   alert("¡Texto copiado exitosamente! 🎉");
 });
-
 const newTextButton = document.getElementById("new--button--text");
 
 newTextButton.addEventListener("click", function () {
