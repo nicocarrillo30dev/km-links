@@ -1,0 +1,12 @@
+Crear 3 botones (promoción, pre venta, ninguno) 
+
+    If se presiona el botón promoción o pre venta, aparecen 2 botones (fecha límite y sin fecha)
+    else, no aparece nada
+
+    If se presiona el botón "fecha límite" y se selecciona la fecha o se presiona el botón "sin fecha", se activa el display de cursos, el botón "agregar otro curso", "eliminar" y "generar texto"
+
+    Aparecerá un contenedor el cual tenga un select de todos los cursos en un json, un input para ingresar el porcentaje del descuento y en cuadro con el precio final dependiendo del descuento
+
+    If se le da click al botón "generar texto", se generará un texto dependiendo de los primeros 3 botones seleccionados (promoción, pre venta, ninguno). 
+
+
