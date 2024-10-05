@@ -625,7 +625,7 @@ function crearCurso() {
     const deleteButton = document.createElement("button");
     deleteButton.id = `course--delete-${numeroCurso}`;
     deleteButton.classList.add("delete__course");
-    deleteButton.textContent = "Eliminar curso";
+    deleteButton.textContent = "eliminar curso";
 
     deleteButton.addEventListener("click", function () {
       const containerToDelete = document.getElementById(
