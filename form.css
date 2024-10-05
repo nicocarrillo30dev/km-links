@@ -101,7 +101,7 @@ h3 {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: 24px;
   align-self: stretch;
 }
 .courses__title {
