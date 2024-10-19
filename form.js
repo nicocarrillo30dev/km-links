@@ -709,7 +709,8 @@ const paragraphContainer = document.getElementById("container-paragraph");
 const copyButton = document.getElementById("text--button--copy");
 
 function formatearFecha(fecha) {
-  const fechaObj = new Date(fecha);
+  const [year, month, day] = fecha.split("-");
+  const fechaObj = new Date(year, month - 1, day); // Crear la fecha de forma precisa
   const opciones = { day: "numeric", month: "long" };
   return fechaObj.toLocaleDateString("es-ES", opciones);
 }
